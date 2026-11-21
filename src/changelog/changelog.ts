@@ -13,6 +13,17 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.3.0',
+    date: '2026-11-20',
+    items: [
+      { type: 'nuevo', text: 'Inicio muestra lo que escuchaste y lo agregado recientemente en tu servidor.' },
+      { type: 'nuevo', text: 'Biblioteca: explora tus playlists, artistas, álbumes, canciones y géneros.' },
+      { type: 'nuevo', text: 'Pantallas de álbum, artista y playlist con portadas, duración y formato.' },
+      { type: 'nuevo', text: 'Si tienes varias bibliotecas de música, elige cuál ver o míralas todas juntas.' },
+      { type: 'mejora', text: 'La app carga más rápido: cada pantalla se descarga solo cuando la abres.' },
+    ],
+  },
+  {
     version: '0.2.0',
     date: '2026-11-20',
     items: [

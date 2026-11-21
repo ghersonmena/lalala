@@ -8,6 +8,7 @@ export type AppErrorCode =
   | 'unsupported-version'
   | 'invalid-credentials'
   | 'unauthorized'
+  | 'not-found'
   | 'server-error'
 
 /** Error de la app con un mensaje listo para mostrar al usuario. */
@@ -19,6 +20,13 @@ export class AppError extends Error {
     this.name = 'AppError'
     this.code = code
   }
+}
+
+/** Errores que no tiene sentido reintentar (sesión inválida o elemento inexistente). */
+export function isPermanentError(error: unknown): boolean {
+  if (error instanceof AppError) return error.code === 'unauthorized' || error.code === 'not-found'
+  const status = isAxiosError(error) ? error.response?.status : undefined
+  return status === 401 || status === 403 || status === 404
 }
 
 export function isUnauthorized(error: unknown): boolean {
@@ -34,6 +42,7 @@ export function toAppError(error: unknown): AppError {
   if (isAxiosError(error)) {
     const status = error.response?.status
     if (status === 401) return new AppError('unauthorized', 'Tu sesión expiró. Vuelve a iniciar sesión.')
+    if (status === 404) return new AppError('not-found', 'No se encontró en tu servidor. Puede que se haya eliminado.')
     if (!error.response) {
       return new AppError('unreachable', 'No se pudo contactar al servidor. Revisa tu conexión.')
     }

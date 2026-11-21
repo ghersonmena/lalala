@@ -218,7 +218,8 @@ Dónde va el acento: texto de enlaces ("Ver todo"), artista en la pantalla de á
 - Línea delgada de progreso (2px) en acento en el borde inferior.
 
 ### 6. Biblioteca
-- Encabezado "Biblioteca" + botón "Editar" en acento.
+- Encabezado "Biblioteca" + botón "Editar" en acento (pendiente: aún no definido qué edita; no mostrarlo hasta que tenga función).
+- **Varias bibliotecas de música:** la app es para cualquier usuario de Jellyfin. Si el usuario tiene acceso a más de una biblioteca `music`, se muestran chips "Todas" + una por biblioteca (`LibraryPicker`). La elección se recuerda (`libraryStore`) y filtra Inicio, Biblioteca y las listas. Con una sola biblioteca no se muestra el selector. Las playlists no dependen de la biblioteca.
 - Filas con ícono en acento y chevron: Playlists, Artistas, Álbumes, Canciones, Géneros, Descargado.
 - Sección "Agregado recientemente": cuadrícula de 2 columnas de álbumes.
 

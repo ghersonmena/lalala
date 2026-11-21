@@ -7,6 +7,7 @@ export const storageKeys = {
   changelogSeen: `${PREFIX}changelog.lastSeenVersion`,
   deviceId: `${PREFIX}deviceId`,
   session: `${PREFIX}session`,
+  library: `${PREFIX}library`,
 } as const
 
 export function readString(key: string): string | null {
