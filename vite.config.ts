@@ -45,6 +45,10 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    // Escucha en todas las interfaces para poder abrir la app desde el celular en la misma red
+    // (http://<IP-de-tu-equipo>:5173). Solo afecta a `npm run dev` / `npm run preview`.
+    server: { host: true },
+    preview: { host: true },
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
     },

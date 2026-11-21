@@ -5,6 +5,8 @@ const PREFIX = 'lalala.'
 export const storageKeys = {
   prefs: `${PREFIX}prefs`,
   changelogSeen: `${PREFIX}changelog.lastSeenVersion`,
+  deviceId: `${PREFIX}deviceId`,
+  session: `${PREFIX}session`,
 } as const
 
 export function readString(key: string): string | null {

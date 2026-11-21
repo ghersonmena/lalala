@@ -13,6 +13,16 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.2.0',
+    date: '2026-11-20',
+    items: [
+      { type: 'nuevo', text: 'Conecta tu servidor Jellyfin: escribe tu dominio o IP y la app lo encuentra y lo valida.' },
+      { type: 'nuevo', text: 'Inicia sesión con tu usuario de Jellyfin; la sesión se mantiene al cerrar la app.' },
+      { type: 'nuevo', text: 'Ajustes muestra tu cuenta y servidor, y permite cerrar sesión.' },
+      { type: 'mejora', text: 'Si tu sesión expira o se revoca, la app te lleva de vuelta al inicio de sesión.' },
+    ],
+  },
+  {
     version: '0.1.0',
     date: '2026-11-20',
     items: [

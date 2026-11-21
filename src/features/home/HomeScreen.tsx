@@ -1,8 +1,10 @@
 import { UserRound } from 'lucide-react'
 import { Link } from 'react-router'
+import { useSessionStore } from '../../core/session/sessionStore'
 import { EmptyState, Screen } from '../../core/ui/Screen'
 
 export function HomeScreen() {
+  const serverName = useSessionStore((s) => s.session?.server.name ?? 'tu servidor')
   return (
     <Screen
       title="Inicio"
@@ -17,10 +19,10 @@ export function HomeScreen() {
       }
     >
       <p className="flex items-center gap-2 text-[0.8125rem] text-text-tertiary">
-        <span className="size-2 rounded-full bg-text-tertiary" aria-hidden />
-        Sin servidor conectado
+        <span className="size-2 rounded-full bg-accent" aria-hidden />
+        Conectado a {serverName}
       </p>
-      <EmptyState title="Aún no hay música" description="Conecta tu servidor Jellyfin para ver tu biblioteca aquí." />
+      <EmptyState title="Tu música llegará pronto" description="Los álbumes y canciones de tu servidor aparecerán aquí." />
     </Screen>
   )
 }

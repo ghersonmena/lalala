@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router'
 import { ChangelogModal } from '../changelog/ChangelogModal'
+import { useSessionCheck } from '../core/session/useSessionCheck'
 import { BottomNav } from '../core/ui/BottomNav'
 import { UpdatePrompt } from '../core/ui/UpdatePrompt'
 
@@ -7,6 +8,7 @@ const TAB_PATHS = ['/', '/library', '/search']
 
 /** Layout raíz: contenido + barra inferior + modales globales. */
 export function App() {
+  useSessionCheck()
   const { pathname } = useLocation()
   const showNav = TAB_PATHS.includes(pathname)
 

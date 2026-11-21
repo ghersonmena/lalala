@@ -1,8 +1,22 @@
-import { Check, ChevronLeft, ChevronRight, Monitor, Moon, Sparkles, Sun, type LucideIcon } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  Monitor,
+  Moon,
+  Server,
+  Sparkles,
+  Sun,
+  type LucideIcon,
+} from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useChangelogStore } from '../../changelog/changelogStore'
 import { APP_NAME, APP_VERSION } from '../../core/config'
+import { logout } from '../../core/data/authRepository'
+import { useSessionStore } from '../../core/session/sessionStore'
 import { ACCENTS, useThemeStore, type ThemeMode } from '../../core/theme/themeStore'
 const MODES: { id: ThemeMode; label: string; icon: LucideIcon }[] = [
   { id: 'system', label: 'Sistema', icon: Monitor },
@@ -14,6 +28,16 @@ export function SettingsScreen() {
   const navigate = useNavigate()
   const { mode, accent, setMode, setAccent } = useThemeStore()
   const showAllChangelog = useChangelogStore((s) => s.showAll)
+  const session = useSessionStore((s) => s.session)
+  const signOut = useSessionStore((s) => s.signOut)
+  const queryClient = useQueryClient()
+
+  const handleSignOut = () => {
+    if (session) void logout(session) // revoca el token en el servidor (sin esperar)
+    signOut()
+    queryClient.clear()
+    void navigate('/login', { replace: true })
+  }
 
   return (
     <main className="px-5 pt-[max(env(safe-area-inset-top),16px)]">
@@ -71,6 +95,29 @@ export function SettingsScreen() {
           })}
         </div>
       </Section>
+
+      {session && (
+        <Section title="Cuenta">
+          <div className="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3">
+            <Server size={22} className="shrink-0 text-accent" aria-hidden />
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-medium">{session.userName}</p>
+              <p className="truncate text-[0.8125rem] text-text-tertiary">
+                {session.server.name} · Jellyfin {session.server.version}
+              </p>
+              <p className="truncate text-[0.8125rem] text-text-tertiary">{session.server.url}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-surface font-semibold text-accent active:opacity-80"
+          >
+            <LogOut size={20} strokeWidth={2} aria-hidden />
+            Cerrar sesión
+          </button>
+        </Section>
+      )}
 
       <Section title="Acerca de">
         <ul>

@@ -174,6 +174,10 @@ Dónde va el acento: texto de enlaces ("Ver todo"), artista en la pantalla de á
 ## Pantallas
 
 ### 1. Login / Servidor
+- Dos pasos: **1) servidor** → solo después de validarlo aparece **2) usuario y contraseña** (con tarjeta del servidor y botón "Cambiar").
+- El servidor puede venir de `VITE_DEFAULT_SERVER_URL` (lo define el desarrollador en `.env`/`.env.local`): se valida solo al abrir el login y, si responde, salta directo al paso 2. Si falla, se muestra el paso 1 con la URL precargada y el error.
+- Si no hay servidor en el `.env`, el usuario escribe la dirección (dominio o IP, con o sin `https://`/puerto). El SDK prueba variantes (https/http, puertos 8096/8920) y elige la mejor (`validateServer` en `core/data/authRepository.ts`).
+- El último servidor validado se recuerda aunque se cierre sesión.
 - Campo de URL del servidor → validar con `GET /System/Info/Public` (muestra nombre y versión del servidor).
 - Usuario + contraseña → `POST /Users/AuthenticateByName`. **Nunca guardar la contraseña**, solo el `accessToken`.
 - Guardar URL del servidor, userId, accessToken y deviceId. Si hay sesión válida, saltar directo a Inicio.
