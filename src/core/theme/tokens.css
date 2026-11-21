@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+/* Las utilidades de Tailwind (bg-background, text-accent, …) apuntan a variables
+   que cambian según data-theme / data-accent en <html>. */
+@theme inline {
+  --color-background: var(--c-background);
+  --color-surface: var(--c-surface);
+  --color-surface-elevated: var(--c-surface-elevated);
+  --color-nav-bar: var(--c-nav-bar);
+  --color-divider: var(--c-divider);
+  --color-nav-border: var(--c-nav-border);
+  --color-text-primary: var(--c-text-primary);
+  --color-text-secondary: var(--c-text-secondary);
+  --color-text-tertiary: var(--c-text-tertiary);
+  --color-accent: var(--c-accent);
+
+  --font-display: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --c-background: #0e0e10;
+  --c-surface: #1e1e22;
+  --c-surface-elevated: #232328;
+  --c-nav-bar: #141416;
+  --c-divider: #222226;
+  --c-nav-border: #26262b;
+  --c-text-primary: #f5f5f7;
+  --c-text-secondary: #a1a1a8;
+  --c-text-tertiary: #8a8a92;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --c-background: #f5f5f7;
+  --c-surface: #e8e8ed;
+  --c-surface-elevated: #ffffff;
+  --c-nav-bar: #fafafc;
+  --c-divider: #e2e2e7;
+  --c-nav-border: #d8d8de;
+  --c-text-primary: #111114;
+  --c-text-secondary: #55555e;
+  --c-text-tertiary: #6e6e78;
+}
+
+/* Acentos: tono vivo en oscuro, más profundo en claro (contraste). */
+:root,
+[data-accent='coral'] { --c-accent: #ff6a3d; }
+[data-accent='pink'] { --c-accent: #ff3b6b; }
+[data-accent='violet'] { --c-accent: #7c6cff; }
+[data-accent='teal'] { --c-accent: #2ec4b6; }
+[data-theme='light'][data-accent='coral'] { --c-accent: #d4501f; }
+[data-theme='light'][data-accent='pink'] { --c-accent: #d81e4f; }
+[data-theme='light'][data-accent='violet'] { --c-accent: #5b4be0; }
+[data-theme='light'][data-accent='teal'] { --c-accent: #178f84; }
+
+/* Transición de tema: sin el fundido por defecto; la vista nueva se revela con un círculo
+   (la animación del clip-path la lanza themeTransition.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    background-color: var(--c-background);
+    color: var(--c-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@utility screen-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.125rem; /* 34px */
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+@utility section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3125rem; /* 21px */
+  line-height: 1.2;
+}
+
+@utility label-caps {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}

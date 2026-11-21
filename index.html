@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es" data-theme="dark" data-accent="coral">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0E0E10" />
+    <meta name="color-scheme" content="dark light" />
+    <title>%VITE_APP_NAME%</title>
+    <!-- Aplica tema y acento guardados antes del primer pintado (evita parpadeo) -->
+    <script>
+      ;(function () {
+        var d = document.documentElement
+        try {
+          var p = (JSON.parse(localStorage.getItem('lalala.prefs') || '{}').state) || {}
+          var m = p.mode || 'system'
+          var t = m === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : m
+          d.dataset.theme = t
+          d.dataset.accent = p.accent || 'coral'
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>

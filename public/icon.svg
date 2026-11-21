@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Ícono por defecto de LaLaLa: tres barras tipo ecualizador ("la·la·la") con una onda.
+       Reemplázalo o apunta VITE_APP_ICON a otro SVG; se mantiene dentro de la zona segura (maskable). -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1E1E22"/>
+      <stop offset="1" stop-color="#0E0E10"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#FF3B6B"/>
+      <stop offset="1" stop-color="#FF8A4C"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g fill="url(#accent)">
+    <rect x="150" y="236" width="52" height="120" rx="26"/>
+    <rect x="230" y="186" width="52" height="170" rx="26"/>
+    <rect x="310" y="146" width="52" height="210" rx="26"/>
+  </g>
+  <path d="M146 398 Q 201 376 256 398 T 366 398" fill="none" stroke="#FF6A3D" stroke-width="14" stroke-linecap="round" opacity="0.85"/>
+</svg>
