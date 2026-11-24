@@ -15,7 +15,7 @@ VITE_DEFAULT_SERVER_URL=https://jellyfin.tudominio.com docker compose up -d --bu
 docker compose up -d --build
 ```
 
-Queda escuchando en `http://127.0.0.1:8085` (solo dentro del servidor). Cambia el puerto en
+Queda escuchando en `http://127.0.0.1:8086` (solo dentro del servidor). Cambia el puerto en
 `docker-compose.yml` si ya está ocupado.
 
 ## 2. Publicarla con Cloudflare
@@ -23,12 +23,12 @@ Queda escuchando en `http://127.0.0.1:8085` (solo dentro del servidor). Cambia e
 **Con Cloudflare Tunnel** (Zero Trust → Networks → Tunnels → tu túnel → *Public hostname* → *Add*):
 
 - Subdomain: `musica` (o el que quieras) · Domain: `tudominio.com`
-- Service: `HTTP` → `localhost:8085`
+- Service: `HTTP` → `localhost:8086`
 - Si `cloudflared` corre en Docker, `localhost` no es el servidor: pon ambos contenedores en la
-  misma red y usa `http://lalala:80` (y quita el mapeo `127.0.0.1:8085` si no lo necesitas).
+  misma red y usa `http://lalala:80` (y quita el mapeo `127.0.0.1:8086` si no lo necesitas).
 
 **Con DNS proxied + tu reverse proxy** (nginx, Caddy, Nginx Proxy Manager…): crea el registro
-`musica` en Cloudflare (nube naranja) y en tu proxy apunta ese host a `http://127.0.0.1:8085`.
+`musica` en Cloudflare (nube naranja) y en tu proxy apunta ese host a `http://127.0.0.1:8086`.
 
 ## 3. Revisar en Cloudflare (una vez)
 
