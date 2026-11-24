@@ -1,7 +1,21 @@
-import { ChevronDown, ListMusic, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX } from 'lucide-react'
+import {
+  ChevronDown,
+  Heart,
+  ListMusic,
+  MessageSquareQuote,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Volume1,
+  Volume2,
+  VolumeX,
+} from 'lucide-react'
 import { AnimatePresence, motion, useDragControls, useReducedMotion } from 'motion/react'
 import { useEffect, useState, type CSSProperties } from 'react'
+import { useIsFavorite, useToggleFavorite } from '../../core/data/favorites'
 import { formatDuration } from '../../core/format'
+import type { Track } from '../../core/model/library'
 import { useResolvedTheme } from '../../core/theme/useResolvedTheme'
 import { Cover } from '../../core/ui/Cover'
 import { Slider } from '../../core/ui/Slider'
@@ -17,6 +31,7 @@ import {
   usePlayerStore,
   type PlaySource,
 } from '../../playback'
+import { LyricsView } from './LyricsView'
 import { QueueSheet } from './QueueSheet'
 import { usePalette } from './usePalette'
 import { usePlayerSheet } from './usePlayerSheet'
@@ -27,6 +42,8 @@ const SOURCE_LABEL: Record<PlaySource['type'], string> = {
   artist: 'Reproduciendo del artista',
   songs: 'Reproduciendo desde',
   genre: 'Reproduciendo del género',
+  mix: 'Reproduciendo',
+  favorites: 'Reproduciendo desde',
 }
 
 /** Reproductor a pantalla completa: hoja que sube desde abajo y se cierra deslizando hacia abajo. */
@@ -57,6 +74,7 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
   const reduceMotion = useReducedMotion()
   const dragControls = useDragControls()
   const [queueOpen, setQueueOpen] = useState(false)
+  const [showLyrics, setShowLyrics] = useState(false)
   const { closeAndGo } = usePlayerSheet()
 
   if (!track) return null
@@ -116,36 +134,37 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Portada: se encoge al pausar */}
-        <div className="flex min-h-0 flex-1 items-center justify-center py-4">
-          <motion.div
-            className="aspect-square w-[min(336px,calc(100vw-48px),calc(100dvh-460px))] min-w-[160px]"
-            animate={{ scale: playing ? 1 : 272 / 336 }}
-            transition={reduceMotion ? { duration: 0 } : { type: 'spring', damping: 20, stiffness: 180 }}
-          >
-            <Cover
-              image={track.image}
-              size={336}
-              alt={`Portada de ${track.albumName}`}
-              className="w-full rounded-xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)]"
-            />
-          </motion.div>
-        </div>
-
-        <div className="min-w-0">
-          <h2 className="truncate text-[1.375rem] font-semibold">{track.name}</h2>
-          {track.albumId ? (
-            <button
-              type="button"
-              onClick={() => closeAndGo(`/album/${track.albumId}`)}
-              className="block max-w-full truncate text-left text-[1.0625rem] opacity-70"
-            >
-              {track.artistName}
-            </button>
-          ) : (
-            <p className="truncate text-[1.0625rem] opacity-70">{track.artistName}</p>
-          )}
-        </div>
+        {showLyrics ? (
+          <>
+            {/* Con letras: encabezado compacto y las letras ocupan el espacio de la portada */}
+            <div className="mt-3 flex items-center gap-3">
+              <Cover image={track.image} size={56} className="w-14 rounded-lg" />
+              <TrackTitle track={track} onArtist={() => track.albumId && closeAndGo(`/album/${track.albumId}`)} />
+            </div>
+            <div className="min-h-0 flex-1">
+              <LyricsView track={track} />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Portada: se encoge al pausar */}
+            <div className="flex min-h-0 flex-1 items-center justify-center py-4">
+              <motion.div
+                className="aspect-square w-[min(336px,calc(100vw-48px),calc(100dvh-460px))] min-w-[160px]"
+                animate={{ scale: playing ? 1 : 272 / 336 }}
+                transition={reduceMotion ? { duration: 0 } : { type: 'spring', damping: 20, stiffness: 180 }}
+              >
+                <Cover
+                  image={track.image}
+                  size={336}
+                  alt={`Portada de ${track.albumName}`}
+                  className="w-full rounded-xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)]"
+                />
+              </motion.div>
+            </div>
+            <TrackTitle track={track} onArtist={() => track.albumId && closeAndGo(`/album/${track.albumId}`)} />
+          </>
+        )}
 
         <Progress />
         <Badge />
@@ -173,7 +192,18 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
 
         <VolumeControl />
 
-        <div className="mt-3 flex items-center justify-end">
+        {/* Fila inferior: Letras (activo = fondo sólido) y Cola */}
+        <div className="mt-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowLyrics((v) => !v)}
+            aria-pressed={showLyrics}
+            aria-label="Letras"
+            className="flex size-12 items-center justify-center rounded-full transition-colors"
+            style={showLyrics ? { background: colors.foreground, color: colors.inverse } : { opacity: 0.8 }}
+          >
+            <MessageSquareQuote size={22} aria-hidden />
+          </button>
           <button
             type="button"
             onClick={() => setQueueOpen(true)}
@@ -187,6 +217,34 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
 
       <AnimatePresence>{queueOpen && <QueueSheet onClose={() => setQueueOpen(false)} colors={colors} />}</AnimatePresence>
     </motion.div>
+  )
+}
+
+/** Título + artista a la izquierda y corazón de favorito a la derecha. */
+function TrackTitle({ track, onArtist }: { track: Track; onArtist: () => void }) {
+  const favorite = useIsFavorite(track)
+  const toggleFavorite = useToggleFavorite()
+  return (
+    <div className="flex min-w-0 flex-1 items-center gap-3">
+      <div className="min-w-0 flex-1">
+        <h2 className="truncate text-[1.375rem] font-semibold">{track.name}</h2>
+        <button type="button" onClick={onArtist} className="block max-w-full truncate text-left text-[1.0625rem] opacity-70">
+          {track.artistName}
+        </button>
+      </div>
+      <motion.button
+        type="button"
+        onClick={() => void toggleFavorite(track, favorite)}
+        aria-pressed={favorite}
+        aria-label={favorite ? 'Quitar de favoritas' : 'Agregar a favoritas'}
+        className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/12"
+        whileTap={{ scale: 0.85 }}
+      >
+        <motion.span key={String(favorite)} initial={{ scale: favorite ? 0.4 : 1 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 15 }}>
+          <Heart size={22} fill={favorite ? 'currentColor' : 'none'} aria-hidden />
+        </motion.span>
+      </motion.button>
+    </div>
   )
 }
 

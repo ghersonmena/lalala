@@ -127,3 +127,51 @@ setEngineHandlers({
 export function applyStoredVolume() {
   getAudio().volume = get().volume
 }
+
+// ---------- Cola editable ----------
+
+/** Copias: cada entrada de la cola es un objeto distinto aunque sea la misma canción (claves estables al reordenar). */
+const copies = (tracks: Track[]) => tracks.map((t) => ({ ...t }))
+
+/** Inserta canciones justo después de la actual. Si no hay cola, empieza a sonar. */
+export function playNext(tracks: Track[], source: PlaySource) {
+  const s = get()
+  if (s.queue.length === 0) return playTracks(tracks, 0, source)
+  const items = copies(tracks)
+  const queue = [...s.queue.slice(0, s.index + 1), ...items, ...s.queue.slice(s.index + 1)]
+  const current = s.queue[s.index]
+  const originalIndex = current ? s.originalQueue.indexOf(current) : -1
+  const originalQueue =
+    originalIndex === -1
+      ? [...s.originalQueue, ...items]
+      : [...s.originalQueue.slice(0, originalIndex + 1), ...items, ...s.originalQueue.slice(originalIndex + 1)]
+  set({ queue, originalQueue })
+}
+
+/** Agrega canciones al final de la cola. Si no hay cola, empieza a sonar. */
+export function addToQueue(tracks: Track[], source: PlaySource) {
+  const s = get()
+  if (s.queue.length === 0) return playTracks(tracks, 0, source)
+  const items = copies(tracks)
+  set({ queue: [...s.queue, ...items], originalQueue: [...s.originalQueue, ...items] })
+}
+
+/** Quita una canción de la cola (no la que suena). */
+export function removeFromQueue(index: number) {
+  const s = get()
+  const item = s.queue[index]
+  if (!item || index === s.index) return
+  set({
+    queue: s.queue.filter((_, i) => i !== index),
+    originalQueue: s.originalQueue.filter((t) => t !== item),
+    index: index < s.index ? s.index - 1 : s.index,
+  })
+}
+
+/** Reemplaza el orden de lo que sigue (después de la canción actual), p. ej. tras arrastrar. */
+export function reorderUpcoming(upcoming: Track[]) {
+  const s = get()
+  const queue = [...s.queue.slice(0, s.index + 1), ...upcoming]
+  // Sin aleatorio, el orden elegido pasa a ser el "original" (no se pierde al alternar el aleatorio).
+  set(s.shuffle ? { queue } : { queue, originalQueue: queue })
+}

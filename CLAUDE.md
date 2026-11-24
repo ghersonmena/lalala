@@ -294,7 +294,14 @@ Implementado en Fase 3 (`src/playback/`):
 - `engine.ts`: un único `<audio>`; `hls.js` se importa bajo demanda solo si hay que transcodificar y el navegador no tiene HLS nativo.
 - `queue.ts` (lógica pura con tests), `controller.ts` (API para la UI), `mediaSession.ts`, `persistence.ts` (cola y posición por servidor+usuario en `lalala.playback`).
 - El reproductor completo se abre como entrada del historial (`location.state.player`), así el botón atrás lo cierra; el fondo queda `inert`.
-- Pendiente: casi-gapless (precargar la siguiente), favorito y letras (Fase 4), Transmitir.
+- Pendiente: casi-gapless (precargar la siguiente), Transmitir.
+
+Implementado en Fase 4:
+- `playback/reporting.ts`: `/Sessions/Playing` al empezar a sonar, `/Progress` cada 10 s y en pausa/reanudar/seek, `/Stopped` al cambiar de canción o detener (y con `fetch keepalive` al cerrar la página). La sesión de reproducción (`playSession`) la pone `engine.ts` tras PlaybackInfo.
+- Favoritos: `core/data/favorites.ts` con actualización optimista (`useIsFavorite`, `useToggleFavorite`); `Track.isFavorite` sale de `UserData.IsFavorite`.
+- "Hecho para ti": `getWeeklyMix` (Instant Mix de la canción más escuchada; sin historial, del último álbum agregado; se calcula una vez por sesión) y `getFavoriteTracks`. Pantallas `/mix` y `/favorites`.
+- Letras: `getLyrics` (`/Audio/{id}/Lyrics`, 404 = sin letra) y `LyricsView` (línea actual, auto-scroll que se pausa 4 s si desplazas a mano, tocar = seek).
+- Cola editable en `controller.ts`: `playNext`, `addToQueue`, `removeFromQueue`, `reorderUpcoming`. Cada entrada es una copia (claves estables). Menú "⋯" (`TrackActions.tsx`) y avisos con `showToast`.
 
 - Un solo motor de audio (`playback/`) fuera del árbol de React, expuesto con un store de Zustand (estado: cola, índice, posición, duración, pausado, buffering, formato/modo).
 - **Media Session API**: título, artista, portada y acciones (play, pause, anterior, siguiente, seek) para la notificación, la pantalla de bloqueo y Bluetooth.

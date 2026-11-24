@@ -40,6 +40,10 @@ export interface Track {
   /** Contenedor/formato del archivo (flac, mp3, m4a…), si se conoce. */
   container: string | null
   image: ImageRef | null
+  /** Marcada como favorita en Jellyfin (puede faltar en colas guardadas antiguas). */
+  isFavorite?: boolean
+  /** Jellyfin indica si tiene letra; null = desconocido. */
+  hasLyrics?: boolean | null
 }
 
 export interface Artist {

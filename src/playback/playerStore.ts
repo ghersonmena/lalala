@@ -6,9 +6,17 @@ export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error'
 
 /** De dónde viene la cola (para "REPRODUCIENDO DESDE EL ÁLBUM …"). */
 export interface PlaySource {
-  type: 'album' | 'playlist' | 'artist' | 'songs' | 'genre'
+  type: 'album' | 'playlist' | 'artist' | 'songs' | 'genre' | 'mix' | 'favorites'
   id: string | null
   name: string
+}
+
+/** Sesión de reproducción actual en Jellyfin (para reportar lo que se escucha). */
+export interface PlaybackSession {
+  itemId: string
+  playSessionId: string | null
+  mediaSourceId: string | null
+  playMethod: 'DirectPlay' | 'Transcode'
 }
 
 export interface PlayerState extends QueueState {
@@ -22,6 +30,7 @@ export interface PlayerState extends QueueState {
   badge: string | null
   error: string | null
   volume: number
+  playSession: PlaybackSession | null
 }
 
 export const initialPlayerState: PlayerState = {
@@ -38,6 +47,7 @@ export const initialPlayerState: PlayerState = {
   badge: null,
   error: null,
   volume: 1,
+  playSession: null,
 }
 
 /**

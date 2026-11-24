@@ -6,6 +6,7 @@ import type { Album } from '../../core/model/library'
 import { useSessionStore } from '../../core/session/sessionStore'
 import { AlbumCarousel, Carousel, Section } from '../../core/ui/albums'
 import { EmptyState, Screen } from '../../core/ui/Screen'
+import { MadeForYou } from './MadeForYou'
 import { AlbumCardSkeleton, ErrorState, InlineEmpty } from '../../core/ui/states'
 import type { UseQueryResult } from '@tanstack/react-query'
 
@@ -53,6 +54,7 @@ export function HomeScreen() {
             query={recentlyPlayed}
             emptyText="Cuando escuches música, tus álbumes aparecerán aquí."
           />
+          <MadeForYou />
           <AlbumSection
             title="Agregado recientemente"
             seeAllTo="/recent/added"

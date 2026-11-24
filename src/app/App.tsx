@@ -3,8 +3,10 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { ChangelogModal } from '../changelog/ChangelogModal'
 import { useSessionCheck } from '../core/session/useSessionCheck'
 import { BottomNav } from '../core/ui/BottomNav'
+import { Toast } from '../core/ui/Toast'
 import { UpdatePrompt } from '../core/ui/UpdatePrompt'
 import { MiniPlayer } from '../features/player/MiniPlayer'
+import { TrackActionsSheet } from '../features/player/TrackActions'
 import { usePlayerSheet } from '../features/player/usePlayerSheet'
 import { initPlayback, usePlayerStore } from '../playback'
 import { useTabSwipe } from './tabSwipe'
@@ -40,6 +42,8 @@ export function App() {
           <FullPlayer />
         </Suspense>
       )}
+      <TrackActionsSheet />
+      <Toast />
       <UpdatePrompt />
       <ChangelogModal />
       <ScrollRestoration />

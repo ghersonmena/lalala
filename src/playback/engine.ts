@@ -80,6 +80,7 @@ export async function loadTrack(track: Track, opts: { autoplay: boolean; startMs
     durationMs: track.durationMs,
     badge: null,
     error: null,
+    playSession: null,
   })
 
   const session = useSessionStore.getState().session
@@ -101,7 +102,15 @@ export async function loadTrack(track: Track, opts: { autoplay: boolean; startMs
   }
   if (token !== loadToken) return
   stream = info
-  set({ badge: info.badge })
+  set({
+    badge: info.badge,
+    playSession: {
+      itemId: track.id,
+      playSessionId: info.playSessionId,
+      mediaSourceId: info.mediaSourceId,
+      playMethod: info.kind === 'direct' ? 'DirectPlay' : 'Transcode',
+    },
+  })
 
   const startAt = () => {
     if (startMs > 0) el.currentTime = startMs / 1000

@@ -13,6 +13,17 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.5.0',
+    date: '2026-11-24',
+    items: [
+      { type: 'nuevo', text: 'Hecho para ti: "Mix de la semana" a partir de lo que más escuchas y tus "Favoritas".' },
+      { type: 'nuevo', text: 'Marca canciones como favoritas con el ♥ del reproductor o desde el menú ⋯; se sincroniza con Jellyfin.' },
+      { type: 'nuevo', text: 'Letras sincronizadas en el reproductor: sigue la canción y toca una línea para saltar a ella.' },
+      { type: 'nuevo', text: 'Cola editable: arrastra para reordenar, quita canciones o agrégalas con "Reproducir a continuación".' },
+      { type: 'mejora', text: 'Jellyfin ahora registra lo que escuchas, así "Escuchado recientemente" se mantiene al día.' },
+    ],
+  },
+  {
     version: '0.4.1',
     date: '2026-11-24',
     items: [

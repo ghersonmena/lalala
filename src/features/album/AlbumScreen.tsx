@@ -4,11 +4,12 @@ import { useLibraryQuery } from '../../core/data/libraryQueries'
 import { formatDuration, formatTotalDuration, songsLabel } from '../../core/format'
 import type { Album, Track } from '../../core/model/library'
 import { Cover } from '../../core/ui/Cover'
-import { BackButton } from '../../core/ui/rows'
+import { BackButton, MoreButton } from '../../core/ui/rows'
 import { Equalizer } from '../../core/ui/Equalizer'
 import { ErrorState, RowSkeleton } from '../../core/ui/states'
 import { playTracks, useNowPlaying, type PlaySource } from '../../playback'
 import { PlayButtons } from '../player/PlayButtons'
+import { openTrackActions } from '../player/TrackActions'
 
 export function AlbumScreen() {
   const { id = '' } = useParams()
@@ -118,6 +119,7 @@ function TrackList({ tracks, albumArtist, source }: TrackListProps) {
                 number={t.trackNumber ?? i + 1}
                 showArtist={t.artistName !== albumArtist}
                 onPlay={() => source && playTracks(tracks, i, source)}
+                onMore={() => source && openTrackActions(t, source)}
               />
             </li>
           )
@@ -135,26 +137,30 @@ interface AlbumTrackRowProps {
   number: number
   showArtist: boolean
   onPlay: () => void
+  onMore: () => void
 }
 
 /** Fila numerada; la que suena muestra el ecualizador en lugar del número y el título en acento. */
-function AlbumTrackRow({ track, number, showArtist, onPlay }: AlbumTrackRowProps) {
+function AlbumTrackRow({ track, number, showArtist, onPlay, onMore }: AlbumTrackRowProps) {
   const { active, playing } = useNowPlaying(track.id)
   return (
-    <button
-      type="button"
-      onClick={onPlay}
-      aria-current={active ? 'true' : undefined}
-      className="flex min-h-14 w-full items-center gap-4 border-b border-divider text-left active:opacity-60"
-    >
-      <span className="flex w-6 shrink-0 justify-end text-[0.9375rem] text-text-tertiary tabular-nums">
-        {active ? <Equalizer playing={playing} /> : number}
-      </span>
-      <span className="min-w-0 flex-1 py-2.5">
-        <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
-        {showArtist && <span className="block truncate text-[0.8125rem] text-text-secondary">{track.artistName}</span>}
-      </span>
-      <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
-    </button>
+    <div className="flex items-center">
+      <button
+        type="button"
+        onClick={onPlay}
+        aria-current={active ? 'true' : undefined}
+        className="flex min-h-14 min-w-0 flex-1 items-center gap-4 border-b border-divider text-left active:opacity-60"
+      >
+        <span className="flex w-6 shrink-0 justify-end text-[0.9375rem] text-text-tertiary tabular-nums">
+          {active ? <Equalizer playing={playing} /> : number}
+        </span>
+        <span className="min-w-0 flex-1 py-2.5">
+          <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
+          {showArtist && <span className="block truncate text-[0.8125rem] text-text-secondary">{track.artistName}</span>}
+        </span>
+        <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
+      </button>
+      <MoreButton label={`Más opciones: ${track.name}`} onClick={onMore} />
+    </div>
   )
 }

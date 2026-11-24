@@ -18,7 +18,10 @@ import { PagedList } from '../../core/ui/paged'
 import { MediaRow, SubScreen, TrackRow } from '../../core/ui/rows'
 import { EmptyState } from '../../core/ui/Screen'
 import { AlbumCardSkeleton, ErrorState, RowSkeleton } from '../../core/ui/states'
-import { playTracks } from '../../playback'
+import { playTracks, type PlaySource } from '../../playback'
+import { openTrackActions } from '../player/TrackActions'
+
+const SONGS_SOURCE: PlaySource = { type: 'songs', id: null, name: 'Canciones' }
 
 const gridSkeleton = (
   <div className="grid grid-cols-2 gap-x-4 gap-y-5">
@@ -105,7 +108,8 @@ export function SongsScreen() {
               <TrackRow
                 key={t.id}
                 track={t}
-                onPlay={() => playTracks(tracks, i, { type: 'songs', id: null, name: 'Canciones' })}
+                onPlay={() => playTracks(tracks, i, SONGS_SOURCE)}
+                onMore={() => openTrackActions(t, SONGS_SOURCE)}
               />
             ))}
           </ul>

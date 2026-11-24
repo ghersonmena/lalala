@@ -1,8 +1,9 @@
-import { ChevronDown, Repeat, Repeat1, Shuffle } from 'lucide-react'
-import { motion } from 'motion/react'
+import { ChevronDown, GripVertical, Repeat, Repeat1, Shuffle, X } from 'lucide-react'
+import { motion, Reorder, useDragControls } from 'motion/react'
 import { formatDuration } from '../../core/format'
 import { Cover } from '../../core/ui/Cover'
-import { cycleRepeat, jumpTo, toggleShuffle, usePlayerStore } from '../../playback'
+import type { Track } from '../../core/model/library'
+import { cycleRepeat, jumpTo, removeFromQueue, reorderUpcoming, toggleShuffle, usePlayerStore } from '../../playback'
 import type { PlayerColors } from './usePalette'
 
 /** Cola de reproducción: lo que sigue, con aleatorio y repetir. Tocar una canción salta a ella. */
@@ -51,26 +52,54 @@ export function QueueSheet({ onClose, colors }: { onClose: () => void; colors: P
           </button>
         </div>
 
-        <ol className="no-scrollbar mt-2 flex-1 overflow-y-auto">
+        <p className="mt-1 text-[0.8125rem] opacity-60">Arrastra para reordenar · toca para saltar</p>
+        <div className="no-scrollbar mt-2 flex-1 overflow-y-auto">
           {upcoming.length === 0 && <p className="mt-10 text-center text-sm opacity-60">No hay más canciones en la cola.</p>}
-          {upcoming.map((t, i) => (
-            <li key={`${t.id}-${index + 1 + i}`}>
-              <button
-                type="button"
-                onClick={() => jumpTo(index + 1 + i)}
-                className="flex min-h-14 w-full items-center gap-3 py-1.5 text-left active:opacity-60"
-              >
-                <Cover image={t.image} size={44} className="w-11 rounded-md" />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[0.9375rem]">{t.name}</span>
-                  <span className="block truncate text-[0.8125rem] opacity-60">{t.artistName}</span>
-                </span>
-                <span className="text-xs tabular-nums opacity-60">{formatDuration(t.durationMs)}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
+          <Reorder.Group axis="y" values={upcoming} onReorder={reorderUpcoming} as="ol">
+            {upcoming.map((t, i) => (
+              <QueueItem key={keyOf(t)} track={t} onPlay={() => jumpTo(index + 1 + i)} onRemove={() => removeFromQueue(index + 1 + i)} />
+            ))}
+          </Reorder.Group>
+        </div>
       </div>
     </motion.div>
+  )
+}
+
+// Clave estable por entrada de la cola (cada entrada es un objeto distinto).
+const keys = new WeakMap<Track, number>()
+let nextKey = 0
+function keyOf(track: Track): number {
+  let key = keys.get(track)
+  if (key === undefined) {
+    key = nextKey++
+    keys.set(track, key)
+  }
+  return key
+}
+
+function QueueItem({ track, onPlay, onRemove }: { track: Track; onPlay: () => void; onRemove: () => void }) {
+  const controls = useDragControls()
+  return (
+    <Reorder.Item value={track} dragListener={false} dragControls={controls} className="relative flex items-center gap-1 rounded-lg" whileDrag={{ scale: 1.02, backgroundColor: 'rgba(127,127,127,0.28)' }}>
+      <button type="button" onClick={onPlay} className="flex min-h-14 min-w-0 flex-1 items-center gap-3 py-1.5 text-left active:opacity-60">
+        <Cover image={track.image} size={44} className="w-11 rounded-md" />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[0.9375rem]">{track.name}</span>
+          <span className="block truncate text-[0.8125rem] opacity-60">{track.artistName}</span>
+        </span>
+        <span className="text-xs tabular-nums opacity-60">{formatDuration(track.durationMs)}</span>
+      </button>
+      <button type="button" onClick={onRemove} aria-label={`Quitar de la cola: ${track.name}`} className="flex size-10 items-center justify-center opacity-60">
+        <X size={18} aria-hidden />
+      </button>
+      <span
+        onPointerDown={(e) => controls.start(e)}
+        aria-hidden
+        className="flex size-10 cursor-grab touch-none items-center justify-center opacity-60 active:cursor-grabbing"
+      >
+        <GripVertical size={20} />
+      </span>
+    </Reorder.Item>
   )
 }

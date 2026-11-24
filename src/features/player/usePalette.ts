@@ -7,12 +7,14 @@ export interface PlayerColors {
   background: string
   /** Color base del texto y controles sobre el degradado. */
   foreground: string
+  /** Contraste del foreground (texto sobre un botón activo con fondo foreground). */
+  inverse: string
 }
 
 // Degradado del prototipo, usado mientras se calcula la paleta o si la portada no se puede leer.
 const FALLBACK: Record<ResolvedTheme, PlayerColors> = {
-  dark: { background: 'linear-gradient(180deg, #7E3854 0%, #4E2457 45%, #18101C 100%)', foreground: '#FFFFFF' },
-  light: { background: 'linear-gradient(180deg, #F2D3DF 0%, #E6D6EE 45%, #F5F5F7 100%)', foreground: '#111114' },
+  dark: { background: 'linear-gradient(180deg, #7E3854 0%, #4E2457 45%, #18101C 100%)', foreground: '#FFFFFF', inverse: '#111114' },
+  light: { background: 'linear-gradient(180deg, #F2D3DF 0%, #E6D6EE 45%, #F5F5F7 100%)', foreground: '#111114', inverse: '#FFFFFF' },
 }
 
 type Hsl = [number, number, number]
@@ -27,11 +29,13 @@ function gradient(base: Hsl, theme: ResolvedTheme): PlayerColors {
     return {
       background: `linear-gradient(180deg, ${hsl(base, 0.6, 32)} 0%, ${hsl(base, 0.45, 20)} 45%, ${hsl(base, 0.25, 7)} 100%)`,
       foreground: '#FFFFFF',
+      inverse: '#111114',
     }
   }
   return {
     background: `linear-gradient(180deg, ${hsl(base, 0.55, 84)} 0%, ${hsl(base, 0.4, 91)} 45%, ${hsl(base, 0.15, 97)} 100%)`,
     foreground: '#111114',
+    inverse: '#FFFFFF',
   }
 }
 

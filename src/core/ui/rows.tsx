@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Ellipsis, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { formatDuration } from '../format'
@@ -60,16 +60,16 @@ export function MediaRow({ to, title, subtitle, image, icon, round }: MediaRowPr
   )
 }
 
-/** Canción en lista general (Canciones, playlists): portada + título + artista + duración. Tocarla la reproduce. */
-export function TrackRow({ track, onPlay }: { track: Track; onPlay?: () => void }) {
+/** Canción en lista general (Canciones, playlists): portada + título + artista + duración + "⋯". Tocarla la reproduce. */
+export function TrackRow({ track, onPlay, onMore }: { track: Track; onPlay?: () => void; onMore?: () => void }) {
   const { active, playing } = useNowPlaying(track.id)
   return (
-    <li>
+    <li className="flex items-center">
       <button
         type="button"
         onClick={onPlay}
         aria-current={active ? 'true' : undefined}
-        className="flex min-h-16 w-full items-center gap-3 text-left active:opacity-60"
+        className="flex min-h-16 min-w-0 flex-1 items-center gap-3 text-left active:opacity-60"
       >
         <span className="relative shrink-0">
           <Cover image={track.image} size={48} className="w-12 rounded-md" />
@@ -79,15 +79,32 @@ export function TrackRow({ track, onPlay }: { track: Track; onPlay?: () => void 
             </span>
           )}
         </span>
-        <span className="min-w-0 flex-1 border-b border-divider py-3">
-          <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
-          <span className="block truncate text-[0.8125rem] text-text-secondary">
-            {track.artistName}
-            {track.albumName && ` · ${track.albumName}`}
+        <span className="flex min-w-0 flex-1 items-center gap-3 self-stretch border-b border-divider">
+          <span className="min-w-0 flex-1 py-3">
+            <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
+            <span className="block truncate text-[0.8125rem] text-text-secondary">
+              {track.artistName}
+              {track.albumName && ` · ${track.albumName}`}
+            </span>
           </span>
+          <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
         </span>
-        <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
       </button>
+      {onMore && <MoreButton label={`Más opciones: ${track.name}`} onClick={onMore} />}
     </li>
+  )
+}
+
+/** Botón "⋯" de 48px. */
+export function MoreButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="-mr-3 flex size-12 shrink-0 items-center justify-center self-stretch text-text-tertiary"
+    >
+      <Ellipsis size={20} aria-hidden />
+    </button>
   )
 }

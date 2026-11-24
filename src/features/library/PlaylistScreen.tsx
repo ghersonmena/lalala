@@ -9,6 +9,7 @@ import { BackButton, TrackRow } from '../../core/ui/rows'
 import { ErrorState, RowSkeleton } from '../../core/ui/states'
 import { playTracks, type PlaySource } from '../../playback'
 import { PlayButtons } from '../player/PlayButtons'
+import { openTrackActions } from '../player/TrackActions'
 
 export function PlaylistScreen() {
   const { id = '' } = useParams()
@@ -55,7 +56,12 @@ export function PlaylistScreen() {
             {(items) => (
               <ul>
                 {items.map((t, i) => (
-                  <TrackRow key={`${t.id}-${i}`} track={t} onPlay={() => source && playTracks(items, i, source)} />
+                  <TrackRow
+                    key={`${t.id}-${i}`}
+                    track={t}
+                    onPlay={() => source && playTracks(items, i, source)}
+                    onMore={() => source && openTrackActions(t, source)}
+                  />
                 ))}
               </ul>
             )}

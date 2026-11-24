@@ -9,6 +9,7 @@ import { RequireSession } from './RequireSession'
 
 // Las pantallas secundarias se cargan bajo demanda (paquete inicial más ligero).
 const lists = () => import('../features/library/listScreens')
+const collections = () => import('../features/home/collectionScreens')
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginScreen /> },
@@ -44,6 +45,8 @@ export const router = createBrowserRouter([
         path: 'playlist/:id',
         lazy: async () => ({ Component: (await import('../features/library/PlaylistScreen')).PlaylistScreen }),
       },
+      { path: 'mix', lazy: async () => ({ Component: (await collections()).MixScreen }) },
+      { path: 'favorites', lazy: async () => ({ Component: (await collections()).FavoritesScreen }) },
       {
         path: 'settings',
         lazy: async () => ({ Component: (await import('../features/settings/SettingsScreen')).SettingsScreen }),

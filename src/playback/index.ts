@@ -1,6 +1,7 @@
 import { useSessionStore } from '../core/session/sessionStore'
 import { applyStoredVolume, resetPlayer } from './controller'
 import { setupMediaSession } from './mediaSession'
+import { setupReporting } from './reporting'
 import { clearSavedPlayback, restorePlayback, setupPersistence } from './persistence'
 
 let initialized = false
@@ -13,6 +14,7 @@ export function initPlayback() {
   applyStoredVolume()
   setupMediaSession()
   setupPersistence()
+  setupReporting()
   // Si la sesión se cierra (logout o token revocado), se detiene el audio.
   useSessionStore.subscribe((s, prev) => {
     if (prev.session && !s.session) resetPlayer()

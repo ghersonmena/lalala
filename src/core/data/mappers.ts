@@ -57,6 +57,8 @@ export function toTrack(item: BaseItemDto): Track {
     discNumber: item.ParentIndexNumber ?? null,
     container: (item.Container ?? item.MediaSources?.[0]?.Container ?? null)?.toLowerCase() ?? null,
     image: ownImage ?? albumImage,
+    isFavorite: item.UserData?.IsFavorite ?? false,
+    hasLyrics: item.HasLyrics ?? null,
   }
 }
 
