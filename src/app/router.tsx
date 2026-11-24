@@ -4,6 +4,7 @@ import { LibraryScreen } from '../features/library/LibraryScreen'
 import { LoginScreen } from '../features/login/LoginScreen'
 import { SearchScreen } from '../features/search/SearchScreen'
 import { App } from './App'
+import { setupNavTransitions } from './navTransitions'
 import { RequireSession } from './RequireSession'
 
 // Las pantallas secundarias se cargan bajo demanda (paquete inicial más ligero).
@@ -51,3 +52,5 @@ export const router = createBrowserRouter([
     ],
   },
 ])
+
+setupNavTransitions(router)

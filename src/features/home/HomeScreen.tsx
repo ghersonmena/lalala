@@ -25,6 +25,7 @@ export function HomeScreen() {
       action={
         <Link
           to="/settings"
+          viewTransition
           aria-label="Perfil y ajustes"
           className="flex size-12 items-center justify-center rounded-full bg-surface text-text-secondary"
         >

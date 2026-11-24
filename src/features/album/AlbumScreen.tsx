@@ -69,7 +69,7 @@ function AlbumHeader({ album, tracks }: { album?: Album; tracks?: Track[] }) {
         <>
           <h1 className="mt-5 font-display text-[1.4375rem] leading-tight font-extrabold">{album.name}</h1>
           {artist ? (
-            <Link to={`/artist/${artist.id}`} className="mt-1 text-[1.0625rem] text-accent">
+            <Link to={`/artist/${artist.id}`} viewTransition className="mt-1 text-[1.0625rem] text-accent">
               {album.artistName}
             </Link>
           ) : (

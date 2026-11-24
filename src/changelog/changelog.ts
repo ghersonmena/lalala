@@ -13,6 +13,14 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.4.1',
+    date: '2026-11-24',
+    items: [
+      { type: 'mejora', text: 'Animaciones al navegar: las pantallas entran deslizándose y regresan al revés; las pestañas cambian con un fundido suave.' },
+      { type: 'nuevo', text: 'Desliza a la izquierda o a la derecha para cambiar entre Inicio, Biblioteca y Buscar.' },
+    ],
+  },
+  {
     version: '0.4.0',
     date: '2026-11-20',
     items: [

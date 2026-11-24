@@ -7,6 +7,7 @@ import { UpdatePrompt } from '../core/ui/UpdatePrompt'
 import { MiniPlayer } from '../features/player/MiniPlayer'
 import { usePlayerSheet } from '../features/player/usePlayerSheet'
 import { initPlayback, usePlayerStore } from '../playback'
+import { useTabSwipe } from './tabSwipe'
 
 // El reproductor completo (y las animaciones) se descarga la primera vez que se abre.
 const FullPlayer = lazy(() => import('../features/player/FullPlayer').then((m) => ({ default: m.FullPlayer })))
@@ -21,6 +22,7 @@ export function App() {
   const { open: playerOpen } = usePlayerSheet()
   const [playerLoaded, setPlayerLoaded] = useState(false)
   if (playerOpen && !playerLoaded) setPlayerLoaded(true)
+  useTabSwipe(!playerOpen)
 
   // Espacio inferior: barra de navegación (~84px) + mini-player (64px + 8px) si hay cola.
   const bottomSpace = `calc(max(env(safe-area-inset-bottom), 20px) + ${showNav ? 80 : 0}px + ${hasQueue ? 76 : 0}px)`

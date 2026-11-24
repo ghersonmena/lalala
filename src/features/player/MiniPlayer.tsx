@@ -17,7 +17,7 @@ export function MiniPlayer() {
 
   return (
     <div
-      className="fixed inset-x-0 z-40 mx-auto max-w-[520px] px-2.5"
+      className="vt-mini fixed inset-x-0 z-40 mx-auto max-w-[520px] px-2.5"
       style={{
         bottom: withNav
           ? 'calc(max(env(safe-area-inset-bottom), 20px) + 64px + 8px)'

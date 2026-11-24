@@ -13,7 +13,7 @@ export function BackButton({ label = 'Atrás', fallback = '/' }: { label?: strin
   return (
     <button
       type="button"
-      onClick={() => void (window.history.state?.idx > 0 ? navigate(-1) : navigate(fallback, { replace: true }))}
+      onClick={() => void (window.history.state?.idx > 0 ? navigate(-1) : navigate(fallback, { replace: true, viewTransition: true }))}
       className="-ml-2 flex h-12 items-center text-[1.0625rem] text-accent"
     >
       <ChevronLeft size={26} strokeWidth={2} aria-hidden />
@@ -46,7 +46,7 @@ interface MediaRowProps {
 export function MediaRow({ to, title, subtitle, image, icon, round }: MediaRowProps) {
   return (
     <li>
-      <Link to={to} className="flex min-h-16 items-center gap-3 active:opacity-70">
+      <Link to={to} viewTransition className="flex min-h-16 items-center gap-3 active:opacity-70">
         {image !== undefined && (
           <Cover image={image} size={48} className="w-12 rounded-md" round={round} fallbackIcon={icon} />
         )}

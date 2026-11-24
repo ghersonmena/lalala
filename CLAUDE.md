@@ -100,6 +100,14 @@ Al cambiar entre claro y oscuro (manualmente o porque cambió el sistema):
 - Sin soporte de View Transitions o con `prefers-reduced-motion`: cambio directo sin animación.
 - No usar la versión anterior "cielo animado" (sol/luna/estrellas): fue descartada.
 
+### Transiciones entre pantallas (estilo Apple Music)
+
+- Con View Transitions (React Router `viewTransition` en `Link`/`NavLink`/`navigate`). Todo enlace nuevo entre pantallas debe llevar `viewTransition`.
+- `src/app/navTransitions.ts` pone `<html data-nav="push|pop|tab">`: entrar a un detalle = la nueva desliza desde la derecha (la anterior se corre −28% y se oscurece); atrás = al revés; cambiar de pestaña = fundido corto. ~420 ms, `cubic-bezier(0.32, 0.72, 0, 1)`.
+- Se anima la captura de la pantalla (`root`); la barra (`.vt-nav`) y el mini-player (`.vt-mini`) tienen `view-transition-name` propio y quedan fijos.
+- Durante el cambio de tema se marca `data-theme-switching` para que no se mezcle con estas animaciones.
+- **Deslizar entre pestañas** (`src/app/tabSwipe.ts`): en Inicio/Biblioteca/Buscar, izquierda = siguiente, derecha = anterior (sin dar la vuelta), con animación `tab-next`/`tab-prev`. Se ignora si el toque empieza en algo con scroll horizontal, en un campo/deslizador, a <24px del borde (gesto atrás del sistema), si es más vertical que horizontal, o con el reproductor/un diálogo abierto. `overscroll-behavior: none` evita el gesto "página anterior" del navegador.
+
 ### Colores — oscuro
 
 | Token | Valor | Uso |

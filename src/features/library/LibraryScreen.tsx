@@ -29,7 +29,7 @@ export function LibraryScreen() {
       <ul className="mt-1">
         {ROWS.map(({ label, icon: Icon, to }) => (
           <li key={label} className="border-b border-divider">
-            <Link to={to} className="flex min-h-14 w-full items-center gap-4 active:opacity-70">
+            <Link to={to} viewTransition className="flex min-h-14 w-full items-center gap-4 active:opacity-70">
               <Icon size={24} strokeWidth={2} className="text-accent" aria-hidden />
               <span className="flex-1 text-[1.1875rem]">{label}</span>
               <ChevronRight size={20} strokeWidth={2} className="text-text-tertiary" aria-hidden />

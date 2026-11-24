@@ -10,7 +10,7 @@ export function Section({ title, seeAllTo, children }: { title: string; seeAllTo
       <header className="mb-3 flex items-baseline justify-between gap-4">
         <h2 className="section-title">{title}</h2>
         {seeAllTo && (
-          <Link to={seeAllTo} className="-my-3 py-3 text-[0.9375rem] text-accent">
+          <Link to={seeAllTo} viewTransition className="-my-3 py-3 text-[0.9375rem] text-accent">
             Ver todo
           </Link>
         )}
@@ -33,6 +33,7 @@ export function AlbumCard({ album, width }: { album: Album; width?: number }) {
   return (
     <Link
       to={`/album/${album.id}`}
+      viewTransition
       className="block min-w-0 snap-start active:opacity-70"
       style={width ? { width, flex: `0 0 ${width}px` } : undefined}
     >

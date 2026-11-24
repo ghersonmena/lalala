@@ -19,7 +19,12 @@ export function transitionTheme(theme: ResolvedTheme, reducedMotion: boolean) {
     return
   }
 
+  // Marca la transición como "de tema": desactiva las animaciones de navegación y los
+  // elementos fijos con nombre propio, para que el círculo cubra toda la pantalla.
+  const root = document.documentElement
+  root.dataset.themeSwitching = ''
   const vt = document.startViewTransition(() => applyThemeToDocument(theme))
+  void vt.finished.finally(() => delete root.dataset.themeSwitching)
 
   const x = window.innerWidth
   const y = 0

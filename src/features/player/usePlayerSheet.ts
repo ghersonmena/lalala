@@ -24,6 +24,6 @@ export function usePlayerSheet() {
       if (open) void navigate(-1)
     },
     /** Cierra el reproductor y navega (reemplaza la entrada del reproductor). */
-    closeAndGo: (to: string) => void navigate(to, { replace: open }),
+    closeAndGo: (to: string) => void navigate(to, { replace: open, viewTransition: true }),
   }
 }

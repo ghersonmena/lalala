@@ -127,6 +127,140 @@
   z-index: 1;
 }
 
+/* ---------- Transiciones entre pantallas (estilo iOS / Apple Music) ----------
+   React Router envuelve la navegación en una View Transition; navTransitions.ts pone
+   <html data-nav="push|pop|tab">. Se anima la "foto" de la pantalla (root); la barra de
+   navegación y el mini-player tienen nombre propio y se quedan quietos encima. */
+.vt-nav {
+  view-transition-name: bottom-nav;
+}
+.vt-mini {
+  view-transition-name: mini-player;
+}
+:root[data-theme-switching] .vt-nav,
+:root[data-theme-switching] .vt-mini {
+  view-transition-name: none;
+}
+::view-transition-group(bottom-nav),
+::view-transition-group(mini-player),
+::view-transition-new(bottom-nav),
+::view-transition-new(mini-player) {
+  animation: none;
+}
+::view-transition-old(bottom-nav),
+::view-transition-old(mini-player) {
+  display: none;
+}
+
+:root:not([data-theme-switching])::view-transition-old(root),
+:root:not([data-theme-switching])::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  animation-fill-mode: both;
+}
+/* Entrar: la nueva llega desde la derecha; la anterior se corre un poco y se oscurece. */
+:root[data-nav='push']:not([data-theme-switching])::view-transition-old(root) {
+  animation-name: page-out-left;
+}
+:root[data-nav='push']:not([data-theme-switching])::view-transition-new(root) {
+  animation-name: page-in-right;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+}
+/* Regresar: la actual sale hacia la derecha por encima; la anterior vuelve desde la izquierda. */
+:root[data-nav='pop']:not([data-theme-switching])::view-transition-old(root) {
+  z-index: 2;
+  animation-name: page-out-right;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+}
+:root[data-nav='pop']:not([data-theme-switching])::view-transition-new(root) {
+  animation-name: page-in-left;
+}
+/* Cambiar de pestaña: fundido corto. */
+:root[data-nav='tab']:not([data-theme-switching])::view-transition-old(root) {
+  animation: page-fade-out 140ms ease-out both;
+}
+:root[data-nav='tab']:not([data-theme-switching])::view-transition-new(root) {
+  animation: page-fade-in 220ms ease-out both;
+}
+
+/* Deslizar entre pestañas: ambas pantallas se desplazan en la dirección del dedo. */
+:root[data-nav='tab-next']:not([data-theme-switching])::view-transition-old(root) {
+  animation: tab-out-left 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+:root[data-nav='tab-next']:not([data-theme-switching])::view-transition-new(root) {
+  animation: tab-in-right 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+:root[data-nav='tab-prev']:not([data-theme-switching])::view-transition-old(root) {
+  animation: tab-out-right 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+:root[data-nav='tab-prev']:not([data-theme-switching])::view-transition-new(root) {
+  animation: tab-in-left 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+@keyframes tab-out-left {
+  to {
+    transform: translateX(-35%);
+    opacity: 0;
+  }
+}
+@keyframes tab-in-right {
+  from {
+    transform: translateX(35%);
+    opacity: 0;
+  }
+}
+@keyframes tab-out-right {
+  to {
+    transform: translateX(35%);
+    opacity: 0;
+  }
+}
+@keyframes tab-in-left {
+  from {
+    transform: translateX(-35%);
+    opacity: 0;
+  }
+}
+
+@keyframes page-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes page-out-left {
+  to {
+    transform: translateX(-28%);
+    opacity: 0.55;
+  }
+}
+@keyframes page-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes page-in-left {
+  from {
+    transform: translateX(-28%);
+    opacity: 0.55;
+  }
+}
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-theme-switching])::view-transition-old(root),
+  :root:not([data-theme-switching])::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
 @layer base {
   html,
   body,
@@ -140,7 +274,12 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: none;
+  }
+
+  /* Sin rebote ni gesto de "página anterior" del navegador al deslizar: los gestos los maneja la app. */
+  html,
+  body {
+    overscroll-behavior: none;
   }
 
   button {
