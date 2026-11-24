@@ -1,6 +1,6 @@
 # Proyecto: LaLaLa — cliente de música para Jellyfin (PWA → APK)
 
-> El nombre y el ícono son configurables: `VITE_APP_NAME`, `VITE_APP_SHORT_NAME` y `VITE_APP_ICON` en `.env` (o `.env.local`). Nunca escribas el nombre de la app a mano en el código; usa `APP_NAME` de `src/core/config.ts`. Los íconos PNG de la PWA se generan del SVG en cada build (`@vite-pwa/assets-generator`). Las claves de `localStorage` usan el prefijo fijo `lalala.` y no dependen del nombre.
+> El nombre y el ícono son configurables: `VITE_APP_NAME`, `VITE_APP_SHORT_NAME` y `VITE_APP_ICON` en `.env` (o `.env.local`); ninguno se sube al repo (están en `.gitignore`), la plantilla es `.env.example` y sin ellos se usan los valores por defecto. Nunca escribas el nombre de la app a mano en el código; usa `APP_NAME` de `src/core/config.ts`. Los íconos PNG de la PWA se generan del SVG en cada build (`@vite-pwa/assets-generator`). Las claves de `localStorage` usan el prefijo fijo `lalala.` y no dependen del nombre.
 
 App para escuchar la biblioteca de música de mi servidor Jellyfin personal, con una interfaz limpia y fluida inspirada en el estilo de Apple Music (sin copiar su marca, íconos ni assets).
 

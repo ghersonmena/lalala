@@ -11,6 +11,8 @@ export default defineConfig(({ mode }) => {
   const appName = env.VITE_APP_NAME || 'LaLaLa'
   const appShortName = env.VITE_APP_SHORT_NAME || appName
   const appIcon = env.VITE_APP_ICON || 'public/icon.svg'
+  // Sin .env, index.html (%VITE_APP_NAME%) usaría el texto literal: se rellena el valor por defecto.
+  process.env.VITE_APP_NAME ||= appName
 
   return {
     plugins: [
