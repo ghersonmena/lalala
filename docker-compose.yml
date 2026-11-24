@@ -1,0 +1,15 @@
+# Despliegue de la PWA en tu servidor:
+#   docker compose up -d --build
+# Para actualizar después de un git pull, el mismo comando.
+services:
+  lalala:
+    build:
+      context: .
+      args:
+        # URL de tu Jellyfin para precargarla en el login (o déjala vacía).
+        VITE_DEFAULT_SERVER_URL: ${VITE_DEFAULT_SERVER_URL:-}
+    container_name: lalala
+    restart: unless-stopped
+    ports:
+      # Puerto local donde la publicará Cloudflare (túnel o proxy). Cámbialo si ya está ocupado.
+      - "127.0.0.1:8085:80"

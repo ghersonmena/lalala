@@ -317,6 +317,8 @@ Implementado en Fase 4:
 
 ## Despliegue, red y seguridad
 
+- **Cómo se despliega:** `Dockerfile` (build con Node 22 + nginx) + `deploy/nginx.conf` (fallback SPA, `no-cache` para `index.html`/`sw.js`/manifest, `/assets/` inmutable) + `docker-compose.yml` (puerto `127.0.0.1:8085`). Pasos para el servidor y Cloudflare en `deploy/README.md`. `VITE_DEFAULT_SERVER_URL` se pasa como build arg.
+
 - Hosting: la PWA se sirve como archivos estáticos (`dist/`) desde mi servidor personal, en un **subdominio propio publicado con Cloudflare** (el mismo esquema que mis otras apps), en HTTPS. Jellyfin también está en su subdominio HTTPS.
 - La URL del servidor Jellyfin es configurable en el login (no está fija en el código); puede tener un valor por defecto vía `VITE_DEFAULT_SERVER_URL`.
 - CORS: la PWA y Jellyfin están en subdominios distintos, así que el navegador hace peticiones cross-origin. Jellyfin permite cualquier origen por defecto; si falla, revisar el reverse proxy/Cloudflare y no "arreglarlo" con proxys raros en el cliente.
