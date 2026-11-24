@@ -3,7 +3,9 @@ import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { formatDuration } from '../format'
 import type { ImageRef, Track } from '../model/library'
+import { useNowPlaying } from '../../playback/useNowPlaying'
 import { Cover } from './Cover'
+import { Equalizer } from './Equalizer'
 
 /** Botón "atrás" en acento, arriba a la izquierda. Si no hay historial, va a `fallback`. */
 export function BackButton({ label = 'Atrás', fallback = '/' }: { label?: string; fallback?: string }) {
@@ -58,19 +60,34 @@ export function MediaRow({ to, title, subtitle, image, icon, round }: MediaRowPr
   )
 }
 
-/** Canción en lista general (Canciones, playlists): portada + título + artista + duración. */
-export function TrackRow({ track }: { track: Track }) {
+/** Canción en lista general (Canciones, playlists): portada + título + artista + duración. Tocarla la reproduce. */
+export function TrackRow({ track, onPlay }: { track: Track; onPlay?: () => void }) {
+  const { active, playing } = useNowPlaying(track.id)
   return (
-    <li className="flex min-h-16 items-center gap-3">
-      <Cover image={track.image} size={48} className="w-12 rounded-md" />
-      <div className="min-w-0 flex-1 border-b border-divider py-3">
-        <p className="truncate text-base">{track.name}</p>
-        <p className="truncate text-[0.8125rem] text-text-secondary">
-          {track.artistName}
-          {track.albumName && ` · ${track.albumName}`}
-        </p>
-      </div>
-      <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
+    <li>
+      <button
+        type="button"
+        onClick={onPlay}
+        aria-current={active ? 'true' : undefined}
+        className="flex min-h-16 w-full items-center gap-3 text-left active:opacity-60"
+      >
+        <span className="relative shrink-0">
+          <Cover image={track.image} size={48} className="w-12 rounded-md" />
+          {active && (
+            <span className="absolute inset-0 flex items-center justify-center rounded-md bg-black/45">
+              <Equalizer playing={playing} className="text-white" />
+            </span>
+          )}
+        </span>
+        <span className="min-w-0 flex-1 border-b border-divider py-3">
+          <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
+          <span className="block truncate text-[0.8125rem] text-text-secondary">
+            {track.artistName}
+            {track.albumName && ` · ${track.albumName}`}
+          </span>
+        </span>
+        <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
+      </button>
     </li>
   )
 }

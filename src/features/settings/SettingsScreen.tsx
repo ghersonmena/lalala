@@ -17,6 +17,7 @@ import { useChangelogStore } from '../../changelog/changelogStore'
 import { APP_NAME, APP_VERSION } from '../../core/config'
 import { logout } from '../../core/data/authRepository'
 import { useSessionStore } from '../../core/session/sessionStore'
+import { forgetPlayback } from '../../playback'
 import { ACCENTS, useThemeStore, type ThemeMode } from '../../core/theme/themeStore'
 const MODES: { id: ThemeMode; label: string; icon: LucideIcon }[] = [
   { id: 'system', label: 'Sistema', icon: Monitor },
@@ -34,6 +35,7 @@ export function SettingsScreen() {
 
   const handleSignOut = () => {
     if (session) void logout(session) // revoca el token en el servidor (sin esperar)
+    forgetPlayback() // detiene el audio y borra la cola guardada
     signOut()
     queryClient.clear()
     void navigate('/login', { replace: true })

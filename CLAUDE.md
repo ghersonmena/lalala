@@ -281,6 +281,13 @@ Notas:
 
 ## Reproducción (web)
 
+Implementado en Fase 3 (`src/playback/`):
+- `stream.ts`: `POST /Items/{id}/PlaybackInfo` con un `DeviceProfile` armado con `canPlayType()` (`deviceProfile.ts`). Si Jellyfin permite direct play → `/Audio/{id}/stream?static=true&api_key=…`; si no → `TranscodingUrl` (HLS AAC). Si el original falla en el navegador, se reintenta forzando transcodificación.
+- `engine.ts`: un único `<audio>`; `hls.js` se importa bajo demanda solo si hay que transcodificar y el navegador no tiene HLS nativo.
+- `queue.ts` (lógica pura con tests), `controller.ts` (API para la UI), `mediaSession.ts`, `persistence.ts` (cola y posición por servidor+usuario en `lalala.playback`).
+- El reproductor completo se abre como entrada del historial (`location.state.player`), así el botón atrás lo cierra; el fondo queda `inert`.
+- Pendiente: casi-gapless (precargar la siguiente), favorito y letras (Fase 4), Transmitir.
+
 - Un solo motor de audio (`playback/`) fuera del árbol de React, expuesto con un store de Zustand (estado: cola, índice, posición, duración, pausado, buffering, formato/modo).
 - **Media Session API**: título, artista, portada y acciones (play, pause, anterior, siguiente, seek) para la notificación, la pantalla de bloqueo y Bluetooth.
 - Cola: reproducir álbum, reproducir desde la canción X, aleatorio, siguiente/anterior, repetir (uno/todos).

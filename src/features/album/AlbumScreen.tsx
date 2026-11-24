@@ -1,4 +1,3 @@
-import { Play, Shuffle } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { getAlbum, getAlbumTracks } from '../../core/data/libraryRepository'
 import { useLibraryQuery } from '../../core/data/libraryQueries'
@@ -6,7 +5,10 @@ import { formatDuration, formatTotalDuration, songsLabel } from '../../core/form
 import type { Album, Track } from '../../core/model/library'
 import { Cover } from '../../core/ui/Cover'
 import { BackButton } from '../../core/ui/rows'
+import { Equalizer } from '../../core/ui/Equalizer'
 import { ErrorState, RowSkeleton } from '../../core/ui/states'
+import { playTracks, useNowPlaying, type PlaySource } from '../../playback'
+import { PlayButtons } from '../player/PlayButtons'
 
 export function AlbumScreen() {
   const { id = '' } = useParams()
@@ -30,7 +32,11 @@ export function AlbumScreen() {
           ) : tracks.isError ? (
             <ErrorState error={tracks.error} onRetry={() => void tracks.refetch()} />
           ) : (
-            <TrackList tracks={tracks.data} albumArtist={album.data?.artistName} />
+            <TrackList
+              tracks={tracks.data}
+              albumArtist={album.data?.artistName}
+              source={album.data ? { type: 'album', id: album.data.id, name: album.data.name } : null}
+            />
           )}
         </>
       )}
@@ -78,32 +84,18 @@ function AlbumHeader({ album, tracks }: { album?: Album; tracks?: Track[] }) {
         </div>
       )}
 
-      {/* La reproducción llega en la Fase 3 */}
-      <div className="mt-5 grid w-full grid-cols-2 gap-3">
-        <button
-          type="button"
-          disabled
-          title="Disponible pronto"
-          className="flex h-12 items-center justify-center gap-2 rounded-xl bg-surface font-semibold text-accent disabled:opacity-50"
-        >
-          <Play size={20} fill="currentColor" aria-hidden />
-          Reproducir
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Disponible pronto"
-          className="flex h-12 items-center justify-center gap-2 rounded-xl bg-surface font-semibold text-accent disabled:opacity-50"
-        >
-          <Shuffle size={20} aria-hidden />
-          Aleatorio
-        </button>
-      </div>
+      <PlayButtons tracks={tracks} source={album ? { type: 'album', id: album.id, name: album.name } : null} />
     </header>
   )
 }
 
-function TrackList({ tracks, albumArtist }: { tracks: Track[]; albumArtist?: string }) {
+interface TrackListProps {
+  tracks: Track[]
+  albumArtist?: string
+  source: PlaySource | null
+}
+
+function TrackList({ tracks, albumArtist, source }: TrackListProps) {
   if (tracks.length === 0) {
     return <p className="mt-8 text-center text-[0.8125rem] text-text-secondary">Este álbum no tiene canciones.</p>
   }
@@ -121,20 +113,12 @@ function TrackList({ tracks, albumArtist }: { tracks: Track[]; albumArtist?: str
           return (
             <li key={t.id}>
               {newDisc && <p className="label-caps pt-4 pb-1 text-text-tertiary">Disco {disc}</p>}
-              <div className="flex min-h-14 items-center gap-4 border-b border-divider">
-                <span className="w-6 shrink-0 text-right text-[0.9375rem] text-text-tertiary tabular-nums">
-                  {t.trackNumber ?? i + 1}
-                </span>
-                <div className="min-w-0 flex-1 py-2.5">
-                  <p className="truncate text-base">{t.name}</p>
-                  {t.artistName !== albumArtist && (
-                    <p className="truncate text-[0.8125rem] text-text-secondary">{t.artistName}</p>
-                  )}
-                </div>
-                <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">
-                  {formatDuration(t.durationMs)}
-                </span>
-              </div>
+              <AlbumTrackRow
+                track={t}
+                number={t.trackNumber ?? i + 1}
+                showArtist={t.artistName !== albumArtist}
+                onPlay={() => source && playTracks(tracks, i, source)}
+              />
             </li>
           )
         })}
@@ -143,5 +127,34 @@ function TrackList({ tracks, albumArtist }: { tracks: Track[]; albumArtist?: str
         {songsLabel(tracks.length)} · {formatTotalDuration(totalMs)}
       </p>
     </>
+  )
+}
+
+interface AlbumTrackRowProps {
+  track: Track
+  number: number
+  showArtist: boolean
+  onPlay: () => void
+}
+
+/** Fila numerada; la que suena muestra el ecualizador en lugar del número y el título en acento. */
+function AlbumTrackRow({ track, number, showArtist, onPlay }: AlbumTrackRowProps) {
+  const { active, playing } = useNowPlaying(track.id)
+  return (
+    <button
+      type="button"
+      onClick={onPlay}
+      aria-current={active ? 'true' : undefined}
+      className="flex min-h-14 w-full items-center gap-4 border-b border-divider text-left active:opacity-60"
+    >
+      <span className="flex w-6 shrink-0 justify-end text-[0.9375rem] text-text-tertiary tabular-nums">
+        {active ? <Equalizer playing={playing} /> : number}
+      </span>
+      <span className="min-w-0 flex-1 py-2.5">
+        <span className={`block truncate text-base ${active ? 'text-accent' : ''}`}>{track.name}</span>
+        {showArtist && <span className="block truncate text-[0.8125rem] text-text-secondary">{track.artistName}</span>}
+      </span>
+      <span className="shrink-0 text-[0.8125rem] text-text-tertiary tabular-nums">{formatDuration(track.durationMs)}</span>
+    </button>
   )
 }

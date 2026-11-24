@@ -18,6 +18,7 @@ import { PagedList } from '../../core/ui/paged'
 import { MediaRow, SubScreen, TrackRow } from '../../core/ui/rows'
 import { EmptyState } from '../../core/ui/Screen'
 import { AlbumCardSkeleton, ErrorState, RowSkeleton } from '../../core/ui/states'
+import { playTracks } from '../../playback'
 
 const gridSkeleton = (
   <div className="grid grid-cols-2 gap-x-4 gap-y-5">
@@ -100,8 +101,12 @@ export function SongsScreen() {
       <PagedList query={query} skeleton={rowsSkeleton()} empty={{ title: 'Sin canciones' }}>
         {(tracks) => (
           <ul>
-            {tracks.map((t) => (
-              <TrackRow key={t.id} track={t} />
+            {tracks.map((t, i) => (
+              <TrackRow
+                key={t.id}
+                track={t}
+                onPlay={() => playTracks(tracks, i, { type: 'songs', id: null, name: 'Canciones' })}
+              />
             ))}
           </ul>
         )}

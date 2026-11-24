@@ -8,6 +8,7 @@ export const storageKeys = {
   deviceId: `${PREFIX}deviceId`,
   session: `${PREFIX}session`,
   library: `${PREFIX}library`,
+  playback: `${PREFIX}playback`,
 } as const
 
 export function readString(key: string): string | null {

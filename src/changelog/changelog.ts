@@ -13,6 +13,17 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.4.0',
+    date: '2026-11-20',
+    items: [
+      { type: 'nuevo', text: '¡Ya suena! Reproduce álbumes, playlists o cualquier canción con un toque.' },
+      { type: 'nuevo', text: 'Mini-reproductor siempre a mano y reproductor completo con los colores de la portada.' },
+      { type: 'nuevo', text: 'Controles en la notificación, la pantalla de bloqueo y tus audífonos Bluetooth.' },
+      { type: 'nuevo', text: 'Cola con aleatorio y repetir; al volver a abrir la app sigue donde te quedaste.' },
+      { type: 'nuevo', text: 'Reproduce el archivo original si tu dispositivo lo soporta, o lo convierte automáticamente.' },
+    ],
+  },
+  {
     version: '0.3.0',
     date: '2026-11-20',
     items: [
