@@ -59,6 +59,7 @@ export function toTrack(item: BaseItemDto): Track {
     image: ownImage ?? albumImage,
     isFavorite: item.UserData?.IsFavorite ?? false,
     hasLyrics: item.HasLyrics ?? null,
+    ...(item.PlaylistItemId ? { playlistItemId: item.PlaylistItemId } : {}),
   }
 }
 

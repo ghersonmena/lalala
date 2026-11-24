@@ -1,5 +1,6 @@
 import {
   ChevronDown,
+  Ellipsis,
   Heart,
   ListMusic,
   MessageSquareQuote,
@@ -14,6 +15,8 @@ import {
 import { AnimatePresence, motion, useDragControls, useReducedMotion } from 'motion/react'
 import { useEffect, useState, type CSSProperties } from 'react'
 import { useIsFavorite, useToggleFavorite } from '../../core/data/favorites'
+import { favoriteFeedback } from './favoriteFeedback'
+import { openTrackActions } from './TrackActions'
 import { formatDuration } from '../../core/format'
 import type { Track } from '../../core/model/library'
 import { useResolvedTheme } from '../../core/theme/useResolvedTheme'
@@ -130,7 +133,14 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
                 </>
               )}
             </div>
-            <span className="size-12 shrink-0" aria-hidden />
+            <button
+              type="button"
+              onClick={() => openTrackActions(track, source ?? { type: 'songs', id: null, name: '' })}
+              aria-label="Más opciones"
+              className="-mr-3 flex size-12 shrink-0 items-center justify-center"
+            >
+              <Ellipsis size={26} aria-hidden />
+            </button>
           </div>
         </div>
 
@@ -238,7 +248,7 @@ function TrackTitle({ track, onArtist, className = '' }: { track: Track; onArtis
       </div>
       <motion.button
         type="button"
-        onClick={() => void toggleFavorite(track, favorite)}
+        onClick={() => void toggleFavorite(track, favorite).then((r) => favoriteFeedback(r, false))}
         aria-pressed={favorite}
         aria-label={favorite ? 'Quitar de favoritas' : 'Agregar a favoritas'}
         className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/12"

@@ -1,4 +1,5 @@
-import { Download, ListMusic, MicVocal } from 'lucide-react'
+import { Download, ListMusic, MicVocal, Plus } from 'lucide-react'
+import { openCreatePlaylist } from './AddToPlaylist'
 import { useParams } from 'react-router'
 import {
   getAlbums,
@@ -123,6 +124,16 @@ export function PlaylistsScreen() {
   const query = useLibraryQuery('playlists', getPlaylists)
   return (
     <SubScreen title="Playlists" back="Biblioteca">
+      <button
+        type="button"
+        onClick={openCreatePlaylist}
+        className="flex min-h-16 w-full items-center gap-4 border-b border-divider text-left active:opacity-60"
+      >
+        <span className="flex size-12 items-center justify-center rounded-md bg-surface text-accent">
+          <Plus size={24} aria-hidden />
+        </span>
+        <span className="text-[1.0625rem] font-medium text-accent">Nueva playlist</span>
+      </button>
       {query.isPending ? (
         rowsSkeleton()
       ) : query.isError ? (
@@ -143,7 +154,7 @@ export function PlaylistsScreen() {
           ))}
         </ul>
       ) : (
-        <EmptyState title="Sin playlists" description="Las playlists que crees en Jellyfin aparecerán aquí." />
+        <EmptyState title="Sin playlists" description="Crea una con “Nueva playlist” o desde el menú ⋯ de cualquier canción." />
       )}
     </SubScreen>
   )

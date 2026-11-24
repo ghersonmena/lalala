@@ -44,6 +44,8 @@ export interface Track {
   isFavorite?: boolean
   /** Jellyfin indica si tiene letra; null = desconocido. */
   hasLyrics?: boolean | null
+  /** Id de la entrada dentro de una playlist (solo en canciones leídas de una playlist). */
+  playlistItemId?: string
 }
 
 export interface Artist {

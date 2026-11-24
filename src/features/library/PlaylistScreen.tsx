@@ -1,21 +1,24 @@
 import { ListMusic } from 'lucide-react'
+import { useState } from 'react'
 import { useParams } from 'react-router'
 import { getPlaylist, getPlaylistTracks } from '../../core/data/libraryRepository'
 import { useLibraryInfiniteQuery, useLibraryQuery } from '../../core/data/libraryQueries'
 import { formatTotalDuration, songsLabel } from '../../core/format'
 import { Cover } from '../../core/ui/Cover'
 import { PagedList } from '../../core/ui/paged'
-import { BackButton, TrackRow } from '../../core/ui/rows'
+import { BackButton, MoreButton, TrackRow } from '../../core/ui/rows'
 import { ErrorState, RowSkeleton } from '../../core/ui/states'
 import { playTracks, type PlaySource } from '../../playback'
 import { PlayButtons } from '../player/PlayButtons'
 import { openTrackActions } from '../player/TrackActions'
+import { PlaylistOptions } from './PlaylistOptions'
 
 export function PlaylistScreen() {
   const { id = '' } = useParams()
   const playlist = useLibraryQuery('playlist', (ctx) => getPlaylist(ctx, id), id)
   const tracks = useLibraryInfiniteQuery('playlist-tracks', (ctx, page) => getPlaylistTracks(ctx, id, page), id)
   const p = playlist.data
+  const [optionsOpen, setOptionsOpen] = useState(false)
   const loaded = tracks.data?.pages.flatMap((pg) => pg.items)
   const source: PlaySource | null = p ? { type: 'playlist', id: p.id, name: p.name } : null
   const meta = p
@@ -26,7 +29,11 @@ export function PlaylistScreen() {
 
   return (
     <main className="px-5 pt-[max(env(safe-area-inset-top),8px)]">
-      <BackButton />
+      <div className="flex items-center justify-between">
+        <BackButton />
+        {p && <MoreButton label="Opciones de la playlist" onClick={() => setOptionsOpen(true)} />}
+      </div>
+      {p && <PlaylistOptions playlist={p} open={optionsOpen} onClose={() => setOptionsOpen(false)} />}
       {playlist.isError ? (
         <ErrorState error={playlist.error} onRetry={() => void playlist.refetch()} />
       ) : (

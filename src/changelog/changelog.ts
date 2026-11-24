@@ -13,6 +13,17 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.7.0',
+    date: '2026-11-24',
+    items: [
+      { type: 'nuevo', text: 'Crea playlists desde Biblioteca → Playlists → "Nueva playlist".' },
+      { type: 'nuevo', text: 'Agrega cualquier canción a una playlist (o a una nueva) desde su menú ⋯.' },
+      { type: 'nuevo', text: 'Quita canciones de una playlist, renómbrala o bórrala desde su botón ⋯.' },
+      { type: 'nuevo', text: 'El reproductor tiene su propio botón ⋯ con las acciones de la canción.' },
+      { type: 'mejora', text: 'Al marcar una favorita, la app confirma con Jellyfin que se guardó y te avisa si no.' },
+    ],
+  },
+  {
     version: '0.6.1',
     date: '2026-11-24',
     items: [

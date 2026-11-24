@@ -6,6 +6,7 @@ import { BottomNav } from '../core/ui/BottomNav'
 import { Toast } from '../core/ui/Toast'
 import { UpdatePrompt } from '../core/ui/UpdatePrompt'
 import { MiniPlayer } from '../features/player/MiniPlayer'
+import { AddToPlaylistSheet } from '../features/library/AddToPlaylist'
 import { TrackActionsSheet } from '../features/player/TrackActions'
 import { usePlayerSheet } from '../features/player/usePlayerSheet'
 import { initPlayback, usePlayerStore } from '../playback'
@@ -43,6 +44,7 @@ export function App() {
         </Suspense>
       )}
       <TrackActionsSheet />
+      <AddToPlaylistSheet />
       <Toast />
       <UpdatePrompt />
       <ChangelogModal />

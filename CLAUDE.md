@@ -228,6 +228,8 @@ Dónde va el acento: texto de enlaces ("Ver todo"), artista en la pantalla de á
 ### 6. Biblioteca
 - Encabezado "Biblioteca" + botón "Editar" en acento (pendiente: aún no definido qué edita; no mostrarlo hasta que tenga función).
 - **Varias bibliotecas de música:** la app es para cualquier usuario de Jellyfin. Si el usuario tiene acceso a más de una biblioteca `music`, se muestran chips "Todas" + una por biblioteca (`LibraryPicker`). La elección se recuerda (`libraryStore`) y filtra Inicio, Biblioteca y las listas. Con una sola biblioteca no se muestra el selector. Las playlists no dependen de la biblioteca.
+- Playlists (v0.7.0): `core/data/playlists.ts` (`POST /Playlists`, `POST /Playlists/{id}/Items`) y la hoja `features/library/AddToPlaylist.tsx` (`openAddToPlaylist(tracks)` desde el menú ⋯ de una canción; `openCreatePlaylist()` desde la pantalla Playlists, que luego abre la nueva). Edición (v0.7.0): `removeFromPlaylist` (usa `Track.playlistItemId`, el id de la entrada), `renamePlaylist` (`POST /Playlists/{id}`), `deletePlaylist` (`DELETE /Items/{id}`); hoja `PlaylistOptions.tsx` en la pantalla de la playlist y "Quitar de esta playlist" en el menú ⋯ de canción. El reproductor completo tiene su botón ⋯ (abre `TrackActions`).
+- Favoritos: `useToggleFavorite` relee `GET /Items/{id}` tras marcar y devuelve `problem` (`request` / `not-saved`); `favoriteFeedback` muestra el aviso.
 - Filas con ícono en acento y chevron: Playlists, Artistas, Álbumes, Canciones, Géneros, Descargado.
 - Sección "Agregado recientemente": cuadrícula de 2 columnas de álbumes.
 
