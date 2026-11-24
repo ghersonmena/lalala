@@ -13,6 +13,14 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.6.1',
+    date: '2026-11-24',
+    items: [
+      { type: 'arreglo', text: 'En la app instalada, la portada del reproductor ya no tapa el nombre del álbum.' },
+      { type: 'arreglo', text: 'Favoritas siempre muestra la lista actualizada después de marcar un corazón.' },
+    ],
+  },
+  {
     version: '0.6.0',
     date: '2026-11-24',
     items: [

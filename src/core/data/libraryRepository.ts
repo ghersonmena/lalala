@@ -244,6 +244,10 @@ export async function getFavoriteTracks(ctx: LibraryContext, page: PageRequest):
     sortOrder: [SortOrder.Ascending],
     ...IMAGE_OPTS,
     ...page,
+  }, {
+    // Esta lista cambia cada vez que marcas un corazón: un parámetro único evita que una caché
+    // intermedia (navegador, Cloudflare con "Cache Everything") devuelva la lista anterior.
+    params: { _: Date.now() },
   })
   return toPage(data, toTrack, page.startIndex)
 }

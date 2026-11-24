@@ -139,7 +139,7 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
             {/* Con letras: encabezado compacto y las letras ocupan el espacio de la portada */}
             <div className="mt-3 flex items-center gap-3">
               <Cover image={track.image} size={56} className="w-14 rounded-lg" />
-              <TrackTitle track={track} onArtist={() => track.albumId && closeAndGo(`/album/${track.albumId}`)} />
+              <TrackTitle className="flex-1" track={track} onArtist={() => track.albumId && closeAndGo(`/album/${track.albumId}`)} />
             </div>
             <div className="min-h-0 flex-1">
               <LyricsView track={track} />
@@ -147,10 +147,12 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
           </>
         ) : (
           <>
-            {/* Portada: se encoge al pausar */}
-            <div className="flex min-h-0 flex-1 items-center justify-center py-4">
+            {/* Portada: se encoge al pausar. El contenedor mide el espacio que realmente queda
+                (container-type: size), así la portada nunca se sale y tapa el encabezado,
+                sin importar la altura de la pantalla ni las barras del sistema (PWA instalada). */}
+            <div className="flex min-h-0 flex-1 items-center justify-center py-4 [container-type:size]">
               <motion.div
-                className="aspect-square w-[min(336px,calc(100vw-48px),calc(100dvh-460px))] min-w-[160px]"
+                className="aspect-square w-[min(336px,100cqw,100cqh)]"
                 animate={{ scale: playing ? 1 : 272 / 336 }}
                 transition={reduceMotion ? { duration: 0 } : { type: 'spring', damping: 20, stiffness: 180 }}
               >
@@ -221,11 +223,13 @@ function PlayerSheet({ onClose }: { onClose: () => void }) {
 }
 
 /** Título + artista a la izquierda y corazón de favorito a la derecha. */
-function TrackTitle({ track, onArtist }: { track: Track; onArtist: () => void }) {
+function TrackTitle({ track, onArtist, className = '' }: { track: Track; onArtist: () => void; className?: string }) {
   const favorite = useIsFavorite(track)
   const toggleFavorite = useToggleFavorite()
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-3">
+    // Sin flex-1 por defecto: en la columna del reproductor crecería a lo alto y le quitaría
+    // espacio a la portada (que entonces se desbordaba sobre el encabezado).
+    <div className={`flex min-w-0 items-center gap-3 ${className}`}>
       <div className="min-w-0 flex-1">
         <h2 className="truncate text-[1.375rem] font-semibold">{track.name}</h2>
         <button type="button" onClick={onArtist} className="block max-w-full truncate text-left text-[1.0625rem] opacity-70">
