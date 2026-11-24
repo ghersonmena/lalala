@@ -102,7 +102,7 @@ export function MoreButton({ label, onClick }: { label: string; onClick: () => v
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="-mr-3 flex size-12 shrink-0 items-center justify-center self-stretch text-text-tertiary"
+      className="-mr-3 flex size-12 shrink-0 items-center justify-center text-text-tertiary"
     >
       <Ellipsis size={20} aria-hidden />
     </button>

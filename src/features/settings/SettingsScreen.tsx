@@ -7,8 +7,10 @@ import {
   Monitor,
   Moon,
   Server,
+  Signal,
   Sparkles,
   Sun,
+  Wifi,
   type LucideIcon,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -19,6 +21,7 @@ import { logout } from '../../core/data/authRepository'
 import { clearFavoriteOverrides } from '../../core/data/favorites'
 import { useSessionStore } from '../../core/session/sessionStore'
 import { forgetPlayback } from '../../playback'
+import { QUALITY_OPTIONS, useQualityPrefs, type StreamQuality } from '../../playback/qualityPrefs'
 import { ACCENTS, useThemeStore, type ThemeMode } from '../../core/theme/themeStore'
 const MODES: { id: ThemeMode; label: string; icon: LucideIcon }[] = [
   { id: 'system', label: 'Sistema', icon: Monitor },
@@ -33,6 +36,7 @@ export function SettingsScreen() {
   const session = useSessionStore((s) => s.session)
   const signOut = useSessionStore((s) => s.signOut)
   const queryClient = useQueryClient()
+  const { wifi, cellular, setWifi, setCellular } = useQualityPrefs()
 
   const handleSignOut = () => {
     if (session) void logout(session) // revoca el token en el servidor (sin esperar)
@@ -100,6 +104,17 @@ export function SettingsScreen() {
         </div>
       </Section>
 
+      <Section title="Calidad de streaming">
+        <div className="overflow-hidden rounded-2xl bg-surface">
+          <QualityRow icon={Wifi} label="Wi-Fi" value={wifi} onChange={setWifi} />
+          <QualityRow icon={Signal} label="Datos móviles" value={cellular} onChange={setCellular} />
+        </div>
+        <p className="mt-2 text-[0.8125rem] leading-snug text-text-tertiary">
+          "Original" reproduce el archivo tal cual. Con un límite, Jellyfin convierte a AAC las canciones que lo superan
+          (útil para ahorrar datos). Se aplica desde la siguiente canción.
+        </p>
+      </Section>
+
       {session && (
         <Section title="Cuenta">
           <div className="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3">
@@ -156,5 +171,32 @@ function Row({ icon: Icon, label, onClick }: { icon: LucideIcon; label: string; 
         <ChevronRight size={20} strokeWidth={2} className="text-text-tertiary" aria-hidden />
       </button>
     </li>
+  )
+}
+
+interface QualityRowProps {
+  icon: LucideIcon
+  label: string
+  value: StreamQuality
+  onChange: (q: StreamQuality) => void
+}
+
+function QualityRow({ icon: Icon, label, value, onChange }: QualityRowProps) {
+  return (
+    <label className="flex min-h-14 items-center gap-3 border-b border-divider px-4 last:border-b-0">
+      <Icon size={20} className="shrink-0 text-accent" aria-hidden />
+      <span className="flex-1 text-base">{label}</span>
+      <select
+        value={String(value)}
+        onChange={(e) => onChange(e.target.value === 'original' ? 'original' : (Number(e.target.value) as StreamQuality))}
+        className="h-10 max-w-[55%] cursor-pointer rounded-lg bg-transparent pr-1 text-right text-[0.9375rem] text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        {QUALITY_OPTIONS.map((o) => (
+          <option key={o.value} value={String(o.value)}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }

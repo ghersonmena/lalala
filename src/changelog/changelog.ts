@@ -13,6 +13,16 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.6.0',
+    date: '2026-11-24',
+    items: [
+      { type: 'nuevo', text: 'Buscar: encuentra artistas, álbumes, canciones y playlists mientras escribes.' },
+      { type: 'nuevo', text: 'Tus búsquedas recientes quedan guardadas para repetirlas con un toque.' },
+      { type: 'nuevo', text: 'Calidad de streaming en Ajustes: elige una para Wi-Fi y otra para datos móviles.' },
+      { type: 'arreglo', text: 'El botón ⋯ de las canciones ahora queda centrado en la fila.' },
+    ],
+  },
+  {
     version: '0.5.0',
     date: '2026-11-24',
     items: [

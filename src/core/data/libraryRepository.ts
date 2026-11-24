@@ -313,3 +313,52 @@ export async function getLyrics(ctx: LibraryContext, itemId: string): Promise<Ly
     throw error
   }
 }
+
+// ---------- Búsqueda ----------
+
+export interface SearchResults {
+  artists: Artist[]
+  albums: Album[]
+  tracks: Track[]
+  playlists: Playlist[]
+}
+
+/** Busca en paralelo por tipo (así cada grupo tiene su propio límite). */
+export async function search(ctx: LibraryContext, term: string): Promise<SearchResults> {
+  const searchTerm = term.trim()
+  if (!searchTerm) return { artists: [], albums: [], tracks: [], playlists: [] }
+  const library = getLibraryApi(ctx.api)
+  const items = (types: BaseItemKind[], limit: number, withLibrary = true) =>
+    library.getItems({
+      userId: ctx.userId,
+      parentId: withLibrary ? ctx.libraryId : undefined,
+      searchTerm,
+      includeItemTypes: types,
+      recursive: true,
+      limit,
+      enableTotalRecordCount: false,
+      fields: [ItemFields.Genres],
+      ...IMAGE_OPTS,
+    })
+
+  const [artists, albums, tracks, playlists] = await Promise.all([
+    getArtistApi(ctx.api).getAlbumArtists({
+      userId: ctx.userId,
+      parentId: ctx.libraryId,
+      searchTerm,
+      limit: 8,
+      enableTotalRecordCount: false,
+      ...IMAGE_OPTS,
+    }),
+    items([BaseItemKind.MusicAlbum], 12),
+    items([BaseItemKind.Audio], 20),
+    items([BaseItemKind.Playlist], 8, false),
+  ])
+
+  return {
+    artists: (artists.data.Items ?? []).map(toArtist),
+    albums: (albums.data.Items ?? []).map(toAlbum),
+    tracks: (tracks.data.Items ?? []).map(toTrack),
+    playlists: (playlists.data.Items ?? []).filter((p) => p.MediaType !== MediaType.Video).map(toPlaylist),
+  }
+}

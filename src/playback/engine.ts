@@ -6,6 +6,7 @@ import { toAppError } from '../core/data/errors'
 import type { Track } from '../core/model/library'
 import { useSessionStore } from '../core/session/sessionStore'
 import { supportsNativeHls } from './deviceProfile'
+import { currentMaxBitrate } from './qualityPrefs'
 import { usePlayerStore } from './playerStore'
 import { resolveStream, type StreamInfo } from './stream'
 
@@ -93,6 +94,7 @@ export async function loadTrack(track: Track, opts: { autoplay: boolean; startMs
       userId: session.userId,
       itemId: track.id,
       forceTranscode: opts.forceTranscode,
+      maxBitrate: currentMaxBitrate(),
     })
   } catch (error) {
     if (token !== loadToken) return

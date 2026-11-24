@@ -9,6 +9,8 @@ export const storageKeys = {
   session: `${PREFIX}session`,
   library: `${PREFIX}library`,
   playback: `${PREFIX}playback`,
+  searchHistory: `${PREFIX}search.recent`,
+  playbackPrefs: `${PREFIX}playback.prefs`,
 } as const
 
 export function readString(key: string): string | null {

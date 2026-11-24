@@ -233,8 +233,10 @@ Dónde va el acento: texto de enlaces ("Ver todo"), artista en la pantalla de á
 
 ### 7. Buscar (sin prototipo todavía)
 - Campo de búsqueda (con debounce) con resultados agrupados: Artistas, Álbumes, Canciones, Playlists.
+- Implementado (Fase 5): `search()` en `libraryRepository.ts` hace 4 consultas en paralelo (artistas, álbumes, canciones, playlists) con límites propios; respeta la biblioteca elegida (salvo playlists). Debounce 300 ms, término en la URL (`?q=`), búsquedas recientes (`searchHistory.ts`, máx. 8) que se guardan al enviar o al tocar un resultado.
 
 ### 8. Ajustes
+- Calidad de streaming (Fase 5): `playback/qualityPrefs.ts`, una para Wi-Fi y otra para datos móviles (`navigator.connection.type === 'cellular'`; si el navegador no lo informa, se usa la de Wi-Fi). Original = sin límite (direct play si el formato es compatible); 320/256/192/128 kbps = `MaxStreamingBitrate` en PlaybackInfo. Se aplica desde la siguiente canción.
 - Tema (Sistema / Claro / Oscuro), color de acento, calidad de streaming, "Novedades" (abre el historial completo), info del servidor, cerrar sesión, versión de la app.
 
 ### Barra de navegación inferior
